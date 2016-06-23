@@ -6,7 +6,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -22,13 +24,14 @@ public class ImageAdapter extends BaseAdapter {
 
     private Context context;
     private ArrayList<String> imageList = new ArrayList<>();
+    private ArrayList<Bitmap> bitmapList = new ArrayList<>();
 
     public ImageAdapter(Context context){
         this.context = context;
     }
 
     public int getCount(){
-        return imageList.size();
+        return bitmapList.size();
     }
 
     @Override
@@ -43,22 +46,22 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        ImageView imageView;
+        ViewHolder viewHolder;
         if(view == null){
-            imageView = new ImageView(context);
-
-            // dimensions and appearance of the new view
-            imageView.setLayoutParams(new GridView.LayoutParams(220, 220));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                    context.LAYOUT_INFLATER_SERVICE);
+            view = inflater.inflate(R.layout.image_layout, null);
+            viewHolder = new ViewHolder();
+            viewHolder.imageView = (ImageView) view.findViewById(R.id.imageField);
+            view.setTag(viewHolder);
         }
         else{
-            imageView = (ImageView) view;
+            viewHolder = (ViewHolder) view.getTag();
         }
 
-        Bitmap bitmap = getBitmap(imageList.get(i), 220, 220);
-        imageView.setImageBitmap(bitmap);
-        return imageView;
+        Bitmap bitmap = bitmapList.get(i);
+        viewHolder.imageView.setImageBitmap(bitmap);
+        return view;
     }
 
     private Bitmap getBitmap(String path, int width, int height) {
@@ -92,6 +95,10 @@ public class ImageAdapter extends BaseAdapter {
         imageList.add(path);
     }
 
+    public void addBitmap(Bitmap b){
+        bitmapList.add(b);
+    }
+    // used to add all the images from gallery
     public void addAllImages(Activity activity){
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.MediaColumns.DATA};
@@ -102,5 +109,9 @@ public class ImageAdapter extends BaseAdapter {
             String absolutePathOfImage = cursor.getString(columnIndex);
             imageList.add(absolutePathOfImage);
         }
+    }
+
+    private static class ViewHolder{
+        ImageView imageView;
     }
 }
