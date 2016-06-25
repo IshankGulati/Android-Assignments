@@ -1,56 +1,44 @@
-package com.carwale.ishankgulati.assignment2;
+package com.carwale.aepl.assignment3;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Environment;
-import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
+    RecyclerAdapter adapter;
+    final static int NUM_COLUMNS = 3;
     private static final int CAPTURE_IMAGE_REQUEST_CODE = 10;
-    private GridView grid;
-    private ImageAdapter imageAdapter;
-
+    RecyclerView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        adapter = new RecyclerAdapter(this);
         if(savedInstanceState != null){
             ArrayList<Bitmap> list = savedInstanceState.getParcelableArrayList("bitmapList");
-            imageAdapter.setBitmapList(list);
+            adapter.setBitmapList(list);
         }
 
         final ImageButton button = (ImageButton) findViewById(R.id.cameraButton);
-        grid = (GridView)findViewById(R.id.gridview);
-        imageAdapter = new ImageAdapter(this);
-        grid.setAdapter(imageAdapter);
+        gridView = (RecyclerView) findViewById(R.id.recyclerView);
+
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, NUM_COLUMNS);
+
+        gridView.setAdapter(adapter);
+        gridView.setLayoutManager(gridLayoutManager);
 
         Intent galleryIntent = getIntent();
         String action = galleryIntent.getAction();
@@ -75,32 +63,30 @@ public class MainActivity extends AppCompatActivity {
         if (imageUri != null) {
             try {
                 Bitmap b = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                imageAdapter.addBitmap(b);
-                imageAdapter.notifyDataSetChanged();
+                adapter.addBitmap(b);
+                adapter.notifyDataSetChanged();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
+
     @Override
     protected void onSaveInstanceState(Bundle outBundle){
         super.onSaveInstanceState(outBundle);
-        outBundle.putParcelableArrayList("bitmapList", imageAdapter.getBitmapList());
+        outBundle.putParcelableArrayList("bitmapList", adapter.getBitmapList());
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == CAPTURE_IMAGE_REQUEST_CODE){
             if(resultCode == RESULT_OK){
-
                 Bundle extras = data.getExtras();
                 Bitmap b = (Bitmap) extras.get("data");
 
-                imageAdapter.addBitmap(b);
-                imageAdapter.notifyDataSetChanged();
+                adapter.addBitmap(b);
+                adapter.notifyDataSetChanged();
             }
         }
     }
-
 }

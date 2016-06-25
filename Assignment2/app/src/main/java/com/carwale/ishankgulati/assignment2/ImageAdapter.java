@@ -64,35 +64,12 @@ public class ImageAdapter extends BaseAdapter {
         return view;
     }
 
-    private Bitmap getBitmap(String path, int width, int height) {
-        Bitmap bitmap;
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-
-        options.inSampleSize = calculateImageSize(options, width, height);
-        options.inJustDecodeBounds = false;
-        bitmap = BitmapFactory.decodeFile(path, options);
-        return bitmap;
+    public ArrayList<Bitmap> getBitmapList(){
+        return bitmapList;
     }
 
-    private int calculateImageSize(BitmapFactory.Options options, int width, int height) {
-        int currentHeight = options.outHeight;
-        int currentWidth = options.outWidth;
-        int sampleSize = 1;
-        if(currentHeight > height || currentWidth > width){
-            if(width > height){
-                sampleSize = Math.round((float) currentHeight / (float) height);
-            }
-            else {
-                sampleSize = Math.round((float) currentWidth / (float) width);
-            }
-        }
-
-        return sampleSize;
-    }
-
-    public void add(String path){
-        imageList.add(path);
+    public void setBitmapList(ArrayList<Bitmap> list){
+        bitmapList = list;
     }
 
     public void addBitmap(Bitmap b){
