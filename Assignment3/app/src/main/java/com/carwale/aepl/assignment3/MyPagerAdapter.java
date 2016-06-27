@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,9 +48,19 @@ public class MyPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup parent, int position){
+        RelativeLayout.LayoutParams params =
+                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+        params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+
         ImageView imageView = imageViewList.get(position);
         imageView.setScaleType(ImageView.ScaleType.MATRIX);
-        imageView.setOnTouchListener(new PinchZoom(mContext));
+        imageView.setLayoutParams(params);
+        imageView.setOnTouchListener(new PinchToZoom(mContext));
         if(imageView.getParent() != null){
             ((ViewGroup) imageView.getParent()).removeView(imageView);
         }
