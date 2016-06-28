@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.v4.view.PagerAdapter;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -16,6 +19,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -31,6 +35,7 @@ public class MyPagerAdapter extends PagerAdapter {
     private ArrayList<ImageView> imageViewList;
     private ArrayList<Bitmap> bitmapArrayList;
     private Context mContext;
+    private ImageView imageView;
 
     public MyPagerAdapter(Context mContext){
         this.mContext = mContext;
@@ -48,18 +53,23 @@ public class MyPagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup parent, int position){
-        RelativeLayout.LayoutParams params =
-                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                        RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-        params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+//        RelativeLayout.LayoutParams params =
+//                new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+//                        RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, RelativeLayout.TRUE);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_END, RelativeLayout.TRUE);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_START, RelativeLayout.TRUE);
+//
+//        ImageView imageView = imageViewList.get(position);
+//        imageView.setScaleType(ImageView.ScaleType.MATRIX);
+//        imageView.setLayoutParams(params);
 
-        ImageView imageView = imageViewList.get(position);
-        imageView.setScaleType(ImageView.ScaleType.MATRIX);
-        imageView.setLayoutParams(params);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.pager_imageview,
+                parent, false);
+        imageView = (ImageView) layoutView.findViewById(R.id.imagePager);
+        imageView.setImageBitmap(bitmapArrayList.get(position));
         imageView.setOnTouchListener(new PinchToZoom(mContext));
         if(imageView.getParent() != null){
             ((ViewGroup) imageView.getParent()).removeView(imageView);
@@ -72,6 +82,7 @@ public class MyPagerAdapter extends PagerAdapter {
     @Override
     public void destroyItem(ViewGroup parent, int position, Object view){
         imageViewList.remove(position);
+        bitmapArrayList.remove(position);
     }
 
     public void setList(ArrayList<Bitmap> list){

@@ -1,7 +1,11 @@
 package com.carwale.aepl.assignment3;
 
 import android.graphics.Matrix;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.ScaleGestureDetector;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 
 /**
