@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putBoolean("dual", dualpane);
         fragment.setArguments(bundle);
-        fragmentTransaction.add(targetLayout, fragment);
+        fragmentTransaction.replace(targetLayout, fragment);
 
         fragmentTransaction.commit();
     }

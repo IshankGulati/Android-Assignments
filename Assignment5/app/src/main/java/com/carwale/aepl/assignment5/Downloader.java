@@ -39,8 +39,6 @@ public class Downloader extends IntentService{
     @Override
     protected void onHandleIntent(Intent intent) {
         String urlString = intent.getExtras().getString("URL");
-        Context activityContext = (Context) intent.getExtras().getParcelable("context");
-
         InputStream inputStream = null;
         try {
             URL url = new URL(urlString);
@@ -66,7 +64,6 @@ public class Downloader extends IntentService{
         Intent intent1 = new Intent("com.carwale.aepl.assignment5");
         intent1.putExtra("OUTPUT", Content);
         intent1.putExtra("RESULT", result);
-        intent1.putExtra("context", (Parcelable) activityContext);
         sendBroadcast(intent1);
 
     }

@@ -18,8 +18,11 @@ public class DetailsActivity extends AppCompatActivity {
 
         if(savedInstanceState == null) {
             DetailsFragment detailsFragment = new DetailsFragment();
+            Bundle bundle = getIntent().getExtras();
+            bundle.remove("dualpane");
+            bundle.putBoolean("dualpane", false);
             detailsFragment.setArguments(getIntent().getExtras());
-            getFragmentManager().beginTransaction().add(
+            getFragmentManager().beginTransaction().replace(
                     android.R.id.content, detailsFragment).commit();
         }
     }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Created by aepl on 28/6/16.
  */
-public class State {
+public class State implements java.io.Serializable{
     ArrayList<City> cities;
     String stateName;
     int stateId;

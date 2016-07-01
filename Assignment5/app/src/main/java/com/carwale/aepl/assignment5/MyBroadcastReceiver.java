@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
  */
 public class MyBroadcastReceiver extends BroadcastReceiver {
     private ArrayList<State> states = new ArrayList<>();
-    private publish p = null;
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
@@ -29,12 +29,14 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
             String data = intent.getStringExtra("OUTPUT");
             deserialize(data);
             int result = intent.getExtras().getInt("RESULT");
-            p = (publish) intent.getExtras().getParcelable("context");
             if(result == Activity.RESULT_OK){
                 Toast.makeText(context, "Download Completed", Toast.LENGTH_LONG).show();
-                //if(p != null) {
-                p.publishData(states);
-                //}
+
+                Intent i = new Intent(context, MainActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.putExtra("data", states);
+                context.startActivity(i);
             }
             else {
                 Toast.makeText(context, "Download Failed", Toast.LENGTH_LONG).show();
@@ -56,9 +58,9 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
                 int childLength = cityArray.length();
                 for(int j = 0; j < childLength; j++){
                     JSONObject jsonCityNode = cityArray.getJSONObject(j);
-                    String cityName = jsonChildNode.optString("cityName");
-                    int cityId = jsonChildNode.getInt("cityId");
-                    int totalCount = jsonChildNode.getInt("totalCount");
+                    String cityName = jsonCityNode.optString("cityName");
+                    int cityId = jsonCityNode.getInt("cityId");
+                    int totalCount = jsonCityNode.getInt("totalCount");
                     City city = new City(cityName, cityId, totalCount);
                     cities.add(city);
                 }
@@ -73,7 +75,4 @@ public class MyBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    protected interface publish{
-        void publishData(ArrayList<State> states);
-    }
 }

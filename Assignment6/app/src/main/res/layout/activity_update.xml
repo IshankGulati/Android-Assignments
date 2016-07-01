@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingRight="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="ID"
+        android:id="@+id/updateid"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Name"
+        android:id="@+id/updatename"
+        android:layout_below="@+id/updateid"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date of Birth"
+        android:id="@+id/updatedob"
+        android:layout_below="@+id/updatename"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Date of Joining"
+        android:id="@+id/updatedoj"
+        android:layout_below="@+id/updatedob"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Designation"
+        android:id="@+id/updatedes"
+        android:layout_below="@+id/updatedoj"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Salary"
+        android:id="@+id/updatesal"
+        android:layout_below="@+id/updatedes"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"/>
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/updatesal"
+        android:text="Update"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:id="@+id/updatebutton"/>
+
+</RelativeLayout>

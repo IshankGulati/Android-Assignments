@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    tools:context="com.carwale.aepl.assignment7.MainActivity">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/my_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:titleTextColor="@color/LTgray"
+            android:subtitleTextColor="@color/LTgray"
+            android:gravity="center"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_below="@id/my_toolbar"
+            android:elevation="6dp"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize" />
+
+        <android.support.v4.view.ViewPager
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/pager"
+            android:layout_below="@id/tabLayout" />
+
+    </RelativeLayout>
+
+    <ExpandableListView
+        android:layout_width="240dp"
+        android:layout_height="match_parent"
+        android:id="@+id/left_drawer"
+        android:choiceMode="singleChoice"
+        android:layout_gravity="start"
+        android:divider="@android:color/transparent"
+        android:paddingLeft="8dp"
+        android:dividerHeight="0dp"
+        android:background="#111"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_below="@id/tabLayout"></ExpandableListView>
+
+</android.support.v4.widget.DrawerLayout>
