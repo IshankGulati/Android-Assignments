@@ -1,5 +1,6 @@
 package com.carwale.aepl.assignment7;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -20,15 +22,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private CharSequence title;
     private CharSequence drawerTitle;
     private DrawerLayout drawerLayout;
-    private ExpandableListView drawerListView;
+    private AnimatedExpandableListView drawerListView;
     private ActionBarDrawerToggle drawerToggle;
+    private ExampleAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,45 +79,79 @@ public class MainActivity extends AppCompatActivity {
 
         // plug navigation drawer
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerListView = (ExpandableListView) findViewById(R.id.left_drawer);
-        ArrayList<String> drawerListParent = new ArrayList<>();
-        drawerListParent.add("New Car");
-        drawerListParent.add("Used Car");
-        drawerListParent.add("Advantage");
-        drawerListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-            @Override
-            public void onGroupCollapse(int i) {
-                collapse(drawerListView);
+        drawerListView = (AnimatedExpandableListView) findViewById(R.id.left_drawer);
+        List<GroupItem> items = new ArrayList<>();
+        for(int i = 1; i < 6; i++) {
+            GroupItem item = new GroupItem();
+
+            item.title = "Group " + i;
+
+            for(int j = 0; j < i; j++) {
+                ChildItem child = new ChildItem();
+                child.title = "Awesome item " + j;
+                child.hint = "Too awesome";
+
+                item.items.add(child);
             }
-        });
-        drawerListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+            items.add(item);
+        }
+
+        adapter = new ExampleAdapter(this);
+        adapter.setData(items);
+
+        drawerListView.setAdapter(adapter);
+
+        drawerListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+
             @Override
-            public void onGroupExpand(int i) {
-                expand(drawerListView);
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                // We call collapseGroupWithAnimation(int) and
+                // expandGroupWithAnimation(int) to animate group
+                // expansion/collapse.
+                if (drawerListView.isGroupExpanded(groupPosition)) {
+                    drawerListView.collapseGroupWithAnimation(groupPosition);
+                } else {
+                    drawerListView.expandGroupWithAnimation(groupPosition);
+                }
+                return true;
             }
+
         });
 
 
-        ArrayList<Object> drawerListChild = new ArrayList<>();
-        ArrayList<String> dummy = new ArrayList<>();
-        dummy.add("Buy");
-        dummy.add("Sell");
-        dummy.add("Rent");
-        drawerListChild.add(dummy);
-        drawerListChild.add(dummy);
-        drawerListChild.add(dummy);
+//        ArrayList<String> drawerListParent = new ArrayList<>();
+//        drawerListParent.add("New Car");
+//        drawerListParent.add("Used Car");
+//        drawerListParent.add("Advantage");
+//        drawerListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//            @Override
+//            public void onGroupCollapse(int i) {
+//                collapse(drawerListView);
+//            }
+//        });
+//        drawerListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+//            @Override
+//            public void onGroupExpand(int i) {
+//                expand(drawerListView);
+//            }
+//        });
+//
+//
+//        ArrayList<Object> drawerListChild = new ArrayList<>();
+//        ArrayList<String> dummy = new ArrayList<>();
+//        dummy.add("Buy");
+//        dummy.add("Sell");
+//        dummy.add("Rent");
+//        drawerListChild.add(dummy);
+//        drawerListChild.add(dummy);
+//        drawerListChild.add(dummy);
 
 //        drawerListView.setAdapter(new ArrayAdapter<String>(this,
 //                R.layout.drawer_textview, drawerListParent));
-        drawerListView.setAdapter(new DrawerAdapter(this, drawerListParent, drawerListChild));
 
-//        drawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//        });
-//        drawerListView.setOnChildClickListener(getApplicationContext());
+
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -136,9 +175,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         drawerLayout.addDrawerListener(drawerToggle);
-
-
-
     }
 
     @Override
@@ -155,57 +191,120 @@ public class MainActivity extends AppCompatActivity {
         drawerToggle.onConfigurationChanged(newConfig);
     }
 
-    public static void expand(final View v) {
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        final int targetHeight = v.getMeasuredHeight();
-
-        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
-        v.getLayoutParams().height = 1;
-        v.setVisibility(View.VISIBLE);
-        Animation a = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = interpolatedTime == 1
-                        ? ViewGroup.LayoutParams.WRAP_CONTENT
-                        : (int)(targetHeight * interpolatedTime);
-                v.requestLayout();
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        a.setDuration((int)(targetHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+    private static class GroupItem {
+        String title;
+        List<ChildItem> items = new ArrayList<ChildItem>();
     }
 
-    public static void collapse(final View v) {
-        final int initialHeight = v.getMeasuredHeight();
-
-        Animation a = new Animation()
-        {
-            @Override
-            protected void applyTransformation(float interpolatedTime, Transformation t) {
-                if(interpolatedTime == 1){
-                    v.setVisibility(View.GONE);
-                }else{
-                    v.getLayoutParams().height = initialHeight - (int)(initialHeight * interpolatedTime);
-                    v.requestLayout();
-                }
-            }
-
-            @Override
-            public boolean willChangeBounds() {
-                return true;
-            }
-        };
-
-        // 1dp/ms
-        a.setDuration((int)(initialHeight / v.getContext().getResources().getDisplayMetrics().density));
-        v.startAnimation(a);
+    private static class ChildItem {
+        String title;
+        String hint;
     }
+
+    private static class ChildHolder {
+        TextView title;
+        TextView hint;
+    }
+
+    private static class GroupHolder {
+        TextView title;
+    }
+
+
+    private class ExampleAdapter extends AnimatedExpandableListView.AnimatedExpandableListAdapter {
+        private LayoutInflater inflater;
+
+        private List<GroupItem> items;
+
+        public ExampleAdapter(Context context) {
+            inflater = LayoutInflater.from(context);
+        }
+
+        public void setData(List<GroupItem> items) {
+            this.items = items;
+        }
+
+        @Override
+        public ChildItem getChild(int groupPosition, int childPosition) {
+            return items.get(groupPosition).items.get(childPosition);
+        }
+
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+
+        @Override
+        public View getRealChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
+            ChildHolder holder;
+            ChildItem item = getChild(groupPosition, childPosition);
+            if (convertView == null) {
+                holder = new ChildHolder();
+                convertView = inflater.inflate(R.layout.list_item, parent, false);
+                holder.title = (TextView) convertView.findViewById(R.id.textTitle);
+                holder.hint = (TextView) convertView.findViewById(R.id.textHint);
+                convertView.setTag(holder);
+            } else {
+                holder = (ChildHolder) convertView.getTag();
+            }
+
+            holder.title.setText(item.title);
+            holder.title.setTextColor(Color.LTGRAY);
+            holder.hint.setText(item.hint);
+            holder.hint.setTextColor(Color.LTGRAY);
+
+            return convertView;
+        }
+
+        @Override
+        public int getRealChildrenCount(int groupPosition) {
+            return items.get(groupPosition).items.size();
+        }
+
+        @Override
+        public GroupItem getGroup(int groupPosition) {
+            return items.get(groupPosition);
+        }
+
+        @Override
+        public int getGroupCount() {
+            return items.size();
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+            GroupHolder holder;
+            GroupItem item = getGroup(groupPosition);
+            if (convertView == null) {
+                holder = new GroupHolder();
+                convertView = inflater.inflate(R.layout.group_item, parent, false);
+                holder.title = (TextView) convertView.findViewById(R.id.textTitle);
+                convertView.setTag(holder);
+            } else {
+                holder = (GroupHolder) convertView.getTag();
+            }
+
+            holder.title.setText(item.title);
+            holder.title.setTextColor(Color.LTGRAY);
+
+            return convertView;
+        }
+
+        @Override
+        public boolean hasStableIds() {
+            return true;
+        }
+
+        @Override
+        public boolean isChildSelectable(int arg0, int arg1) {
+            return true;
+        }
+
+    }
+
 }

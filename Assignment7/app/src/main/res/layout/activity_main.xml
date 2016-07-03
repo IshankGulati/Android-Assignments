@@ -38,7 +38,7 @@
 
     </RelativeLayout>
 
-    <ExpandableListView
+    <com.carwale.aepl.assignment7.AnimatedExpandableListView
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:id="@+id/left_drawer"
@@ -49,6 +49,6 @@
         android:dividerHeight="0dp"
         android:background="#111"
         android:layout_marginTop="?attr/actionBarSize"
-        android:layout_below="@id/tabLayout"></ExpandableListView>
+        android:layout_below="@id/tabLayout"></com.carwale.aepl.assignment7.AnimatedExpandableListView>
 
 </android.support.v4.widget.DrawerLayout>
